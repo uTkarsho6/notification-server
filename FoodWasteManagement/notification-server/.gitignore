@@ -1,0 +1,9 @@
+# Secrets and credentials — NEVER commit these
+serviceAccountKey.json
+*.json.secret
+
+# Go build artifacts
+notification-server
+
+# Mac OS
+.DS_Store

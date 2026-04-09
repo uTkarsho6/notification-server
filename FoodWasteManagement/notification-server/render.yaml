@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: annapurna-notification-server
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/secrets/serviceAccountKey.json
+    secretFiles:
+      - name: serviceAccountKey.json
+        mountPath: /etc/secrets/serviceAccountKey.json
