@@ -25,13 +25,25 @@ var (
 func main() {
 	ctx := context.Background()
 
-	// Initialize Firebase App using service account credentials
-	credFile := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")
-	if credFile == "" {
-		credFile = "serviceAccountKey.json"
+	log.Println("🔧 Initializing Firebase...")
+
+	// Support two modes:
+	// 1. FIREBASE_CREDENTIALS_JSON env var (for Render cloud deployment)
+	// 2. File path via GOOGLE_APPLICATION_CREDENTIALS (for local Docker)
+	var opt option.ClientOption
+	credsJSON := os.Getenv("FIREBASE_CREDENTIALS_JSON")
+	if credsJSON != "" {
+		log.Println("🔑 Using credentials from FIREBASE_CREDENTIALS_JSON env var")
+		opt = option.WithCredentialsJSON([]byte(credsJSON))
+	} else {
+		credFile := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")
+		if credFile == "" {
+			credFile = "serviceAccountKey.json"
+		}
+		log.Printf("🔑 Using credentials file: %s", credFile)
+		opt = option.WithCredentialsFile(credFile)
 	}
 
-	opt := option.WithCredentialsFile(credFile)
 	app, err := firebase.NewApp(ctx, nil, opt)
 	if err != nil {
 		log.Fatalf("❌ Failed to initialize Firebase app: %v", err)
